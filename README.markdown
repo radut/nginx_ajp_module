@@ -14,12 +14,39 @@ __nginx\_ajp\_module__ - support AJP protocol proxy with Nginx
 
                         listen 80;
 
+<<<<<<< HEAD
                         location / {
                                 ajp_keep_conn on;
                                 ajp_pass tomcats;
                         }
                 }
         }
+=======
+
+	http {
+		upstream tomcats {
+
+			server 127.0.0.1:8009 srun_id=jvm1;
+
+			jvm_route $cookie_JSESSIONID reverse;
+			keepalive 10;
+		}
+
+		server {
+
+			listen 80;
+
+			location / {
+				ajp_keep_conn on;
+				ajp_pass tomcats;
+			}
+		}
+	}
+
+
+
+
+>>>>>>> parent of 3375eda... remove the code of jvm_route module.
 
 # Description
 
@@ -425,6 +452,91 @@ __context:__ _http, server, location, if_
 
 Sets the amount of data that will be flushed to the ajp\_temp\_path when writing. It may be used to prevent a worker process blocking for too long while spooling data.
 
+<<<<<<< HEAD
+=======
+
+
+## jvm\_route
+
+
+
+__syntax:__ _jvm\_route $cookie\_SESSION\_COOKIE\[|session\_url\] \[reverse\]_
+
+__default:__ _none_
+
+__context:__ _upstream_
+
+This directive comes from ngx\_http\_upstream\_jvm\_route\_module ([http://code.google.com/p/nginx-upstream-jvm-route/](http://code.google.com/p/nginx-upstream-jvm-route/)).
+
+'$cookie\_SESSION\_COOKIE' specifies the session cookie name (0.7.24+). 'session\_url' specifies a different session name in the URL when the client does not accept a cookie. The session name is case-insensitive. In this module, if it does not find the session\_url, it will use the session cookie name instead. So if the session name in cookie is the name with its in URL, you don't need give the session\_url name.
+
+With scanning this cookie, the module will send the request to right backend server. As far as I know, the resin's srun\_id name is in the head of cookie. For example, requests with cookie value 'a$$$' are always sent to the server with the srun\_id of 'a'. But tomcat's JSESSIONID is opposite, which is like '$$$.a'. The parameter of 'reverse' specifies the cookie scanned from tail to head.
+
+If the request fails to be sent to the chosen backend server, It will try another server with the Round-Robin mode until all the upstream servers tried. The directive ajp\_next\_upstream can specify in what cases the request will be transmitted to the next server. If you want to force the session sticky, you can set 'ajp\_next\_upstream off'.
+
+
+
+## jvm\_route\_status
+
+
+
+__syntax:__ _jvm\_route\_status upstream\_name_
+
+__default:__ _none_
+
+_'context:_ _location_
+
+This directive comes from ngx\_http\_upstream\_jvm\_route\_module ([http://code.google.com/p/nginx-upstream-jvm-route/](http://code.google.com/p/nginx-upstream-jvm-route/)).
+
+Set the location of pages return the status of the jvm\_route peers. Example:
+	location status {
+		jvm\_route\_status backend;
+	}
+
+
+
+## keepalive
+
+
+
+__syntax:__ _keepalive <num> \[single\]_
+
+__default:__ _none_
+
+__context:__ _upstream_
+
+Switches on keepalive module for the upstream in question. This directive comes from ngx\_http\_upstream\_keepalive\_module ([http://mdounin.ru/hg/ngx\_http\_upstream\_keepalive/](http://mdounin.ru/hg/ngx\_http\_upstream\_keepalive/)). This module is merged into official Nginx after Nginx-1.1.4.
+
+Parameters:
+
+
+
+- num: Maximum number of connections to cache.  If there isn't enough room to cache new connections - last recently used connections will be kicked off the cache.
+
+
+
+
+
+## server(in upstream)
+
+
+
+This directive comes from ngx\_http\_upstream\_jvm\_route\_module ([http://code.google.com/p/nginx-upstream-jvm-route/](http://code.google.com/p/nginx-upstream-jvm-route/)).
+
+Main syntax is the same as the official directive. This module add these parameters:
+
+
+
+- 'srun\_id': identifies the backend JVM's name by cookie. The default srun\_id's value is 'a'. The name can be more than one letter.
+- 'max\_busy': the maximum of active connections with the backend server. The default value is 0 which means unlimited. If the server's active connections is higher than this parameter, it will not be chosen until the server is less busier. If all the servers are busy, Nginx will return 502.
+
+
+
+NOTE: This module does not support the parameter of 'backup' yet.
+
+
+
+>>>>>>> parent of 3375eda... remove the code of jvm_route module.
 # Installation
 
 Download the latest version of the release tarball of this module from github ([http://github.com/yaoweibin/nginx\_ajp\_module](http://github.com/yaoweibin/nginx_ajp_module))
