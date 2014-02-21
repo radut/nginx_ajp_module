@@ -4,14 +4,9 @@ Name
 Synopsis
             http {
                     upstream tomcats {
-<<<<<<< HEAD
-                            server 127.0.0.1:8009;
-=======
-
                             server 127.0.0.1:8009 srun_id=jvm1;
 
                             jvm_route $cookie_JSESSIONID reverse;
->>>>>>> parent of 3375eda... remove the code of jvm_route module.
                             keepalive 10;
                     }
 
@@ -489,8 +484,6 @@ Directives
     writing. It may be used to prevent a worker process blocking for too
     long while spooling data.
 
-<<<<<<< HEAD
-=======
   jvm_route
     syntax: *jvm_route $cookie_SESSION_COOKIE[|session_url] [reverse]*
 
@@ -559,7 +552,7 @@ Directives
     parameters:
 
     'srun_id': identifies the backend JVM's name by cookie. The default
-    srun_id's value is 'a'. The name can be more than one letter.
+     srun_id's value is 'a'. The name can be more than one letter.
     'max_busy': the maximum of active connections with the backend server.
     The default value is 0 which means unlimited. If the server's active
     connections is higher than this parameter, it will not be chosen until
@@ -567,7 +560,7 @@ Directives
     return 502.
     NOTE: This module does not support the parameter of 'backup' yet.
 
->>>>>>> parent of 3375eda... remove the code of jvm_route module.
+
 Installation
     Download the latest version of the release tarball of this module from
     github (<http://github.com/yaoweibin/nginx_ajp_module>)
