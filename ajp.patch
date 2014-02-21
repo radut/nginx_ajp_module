@@ -105,11 +105,10 @@ index ef16a66..3df0e78 100644
      for (i = 2; i < cf->args->nelts; i++) {
  
 @@ -4766,6 +4766,37 @@ ngx_http_upstream_server(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
-
              continue;
          }
  
-        if (ngx_strncmp(value[i].data, "max_busy=", 9) == 0) {
++        if (ngx_strncmp(value[i].data, "max_busy=", 9) == 0) {
 +
 +            if (!(uscf->flags & NGX_HTTP_UPSTREAM_MAX_BUSY)) {
 +                goto invalid;
@@ -143,7 +142,6 @@ index ef16a66..3df0e78 100644
          if (ngx_strncmp(value[i].data, "fail_timeout=", 13) == 0) {
  
              if (!(uscf->flags & NGX_HTTP_UPSTREAM_FAIL_TIMEOUT)) {
-
 @@ -4250,7 +4286,9 @@ ngx_http_upstream_server(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
      us->naddrs = u.naddrs;
      us->weight = weight;
